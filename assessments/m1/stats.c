@@ -1,43 +1,102 @@
-/******************************************************************************
- * Copyright (C) 2017 by Alex Fosdick - University of Colorado
- *
- * Redistribution, modification or use of this software in source or binary
- * forms is permitted as long as the files maintain this copyright. Users are 
- * permitted to modify this and use it to learn about the field of embedded
- * software. Alex Fosdick and the University of Colorado are not liable for any
- * misuse of this material. 
- *
- *****************************************************************************/
-/**
- * @file <Add File Name> 
- * @brief <Add Brief Description Here >
- *
- * <Add Extended Description Here>
- *
- * @author <Add FirsName LastName>
- * @date <Add date >
- *
- */
-
-
-
+#include <limits.h>
 #include <stdio.h>
-#include "stats.h"
 
-/* Size of the Data Set */
-#define SIZE (40)
+void print_statistics(int arr[], int N);
+void print_array(int arr[], int N);
+double find_median();
+double find_mean();
+int find_maximum();
+int find_minimum();
+void sort_array();
 
-void main() {
 
-  unsigned char test[SIZE] = { 34, 201, 190, 154,   8, 194,   2,   6,
-                              114, 88,   45,  76, 123,  87,  25,  23,
-                              200, 122, 150, 90,   92,  87, 177, 244,
-                              201,   6,  12,  60,   8,   2,   5,  67,
-                                7,  87, 250, 230,  99,   3, 100,  90};
-
-  /* Other Variable Declarations Go Here */
-  /* Statistics and Printing Functions Go Here */
-
+int main() {
+    int arr[6] = {6,5,4,3,2,1};
+    print_statistics(arr,6);
 }
 
-/* Add other Implementation File Code Here */
+void print_statistics(int arr[], int N) {
+
+    printf("arr before sort:\n");
+    print_array(arr,N);
+    printf("\n\n");
+
+    printf("max: %d\n\n", find_maximum(arr,N));
+
+    printf("min: %d\n\n", find_minimum(arr,N));
+    
+    printf("median: %f\n\n", find_median(arr,N));
+
+    printf("mean: %f\n\n", find_mean(arr,N));
+
+    printf("arr after sort:\n");
+    print_array(arr,N);
+    printf("\n\n");
+
+    
+}
+
+void print_array(int arr[], int N) {
+    int i;
+    for (i=0; i < N; i++)  {
+        printf("%d   ", arr[i]);
+    }
+}
+
+double find_median(int arr[], int N) {
+    sort_array(arr);
+    double median;
+    if(N==0) {
+        printf("error N = 0\n");
+        return 0;
+    }
+    if(N%2 == 0)// even 
+        median = ((double)(arr[N/2-1]+arr[N/2]))/2;
+
+    else // odd
+        median = arr[N/2];
+
+    return  median;
+}
+
+double find_mean(int arr[], int N) {
+    int i, sum = 0;
+    for(i=0; i<N; i++)  {
+        sum += arr[i];
+    }
+    return ((double)sum)/N;
+}
+
+int find_maximum(int arr[], int N) {
+    int i=0;
+    int max = INT_MIN;
+    for(i=0; i<N; i++)  {
+        if(max < arr[i]) max = arr[i];
+    }
+    return max;
+}
+
+int find_minimum(int arr[], int N) {
+    int i=0;
+    int min = INT_MAX;
+    for(i=0; i<N; i++)  {
+        if(arr[i] < min) min = arr[i];
+    }
+    return min;
+}
+
+void sort_array(int arr[], int N) {
+    int i, temp, sorted = 0;
+    while(!sorted)    {
+        sorted = 1;
+        for(i=0; i<N-1; i++) {
+            if(arr[i+1] < arr[i])   {
+                sorted = 0;
+                temp = arr[i];
+                arr[i] = arr[i+1];
+                arr[i+1] = temp;
+            }
+        }
+    }
+}
+
