@@ -10,7 +10,7 @@
 #*****************************************************************************
 
 # Add your Source files to this variable
-SOURCES = memory.c
+SOURCES = memory.c main.c
 Includes = -I 
 ifeq ($(Platform),MSP432)
 	SOURCES += 

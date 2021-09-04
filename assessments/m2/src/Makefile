@@ -34,34 +34,28 @@ CFLAGS = \
 	-std=c99 \
 
 # Architectures Specific Flags
-
+CPPFLAGS = $(INCLUDES)
 ifeq ($(PLATFORM),HOST)
 
 	# Compiler Flags and Defines
 	CC = gcc
-	CPPFLAGS = $(INCLUDES) -DHOST
+	CPPFLAGS += -DHOST
 	SIZE = size
 
 else 
 	#(MSP432)
-
-	CPU = cortex-m4
-	ARCH = armv7e-m
-	SPECS = nosys.specs
-	LINKER_FILE = ../msp432p401r.lds
-
 	CC = arm-none-eabi-gcc
 	LD = arm-none-eabi-ld
 
 	CFLAGS += 		
-		-mcpu=$(CPU) \
+		-mcpu=cortex-m4 \
 		-mthumb\
-		-march=$(ARCH) \
+		-march=armv7e-m \
 		-mfloat-abi=hard \
 		-mfpu=fpv4-sp-d16 \
-		--specs=$(SPECS) \
-	LDFLAGS = -T $(LINKER_FILE)
-	CPPFLAGS = $(INCLUDES) -DMSP432
+		--specs=nosys.specs \
+	LDFLAGS = -T ../msp432p401r.lds
+	CPPFLAGS = -DMSP432
 	SIZE = arm-none-eabi-size
 
 
@@ -75,6 +69,7 @@ ASMS = $(SOURCES:.c=.s)
 
 PRES = $(SOURCES:.c=.asm)
 
+TARGET = main
 
 %.o : %.c
 	 $(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
@@ -89,15 +84,12 @@ PRES = $(SOURCES:.c=.asm)
 	 $(CC) $(CFLAGS) $(CPPFLAGS) $< -M -o $@
 
 
-main.out : main.c $(OBJS)
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(SOURCES) main.c $(LDFLAGS) -o main.out
 
-.PHONY: all	
-all: $(OBJ)
+$(TARGET).out : $(OBJS)
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(OBJS) $(LDFLAGS) -o $(TARGET).out
 
-.PHONY: build
-build: main.out
-
+.PHONY:compile-all
+compile-all: $(OBJS)
 
 # Deletes all compiled files
 .PHONY:clean
